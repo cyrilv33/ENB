@@ -8,14 +8,22 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
-    private Button createEventAdButton;
+    Button createEventAdButton;
+    ListView eventListView;
+    EditText editText;
+    ArrayList<String> listOfEvents;
+    ArrayAdapter<String> eventListAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,15 +31,24 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // sample
-        String[] listOfEvents = {"Lecture at NH 100", "Career Fair", "Recruiting members"};
-
-        ListAdapter eventListAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
-                listOfEvents);
-
-        ListView eventListView = (ListView) findViewById(R.id.myListView);
-
+        eventListView =(ListView) findViewById(R.id.myListView);
+        editText = (EditText) findViewById(R.id.listContent);
+        listOfEvents = new ArrayList<String>();
+        eventListAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listOfEvents);
         eventListView.setAdapter(eventListAdapter);
 
+        createEventAdButton = (Button) findViewById(R.id.createButton);
+        createEventAdButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                String text = editText.getText().toString();
+
+                listOfEvents.add(text);
+
+                eventListAdapter.notifyDataSetChanged();
+            }
+        });
+        
         eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -41,11 +58,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this,eventPicked,Toast.LENGTH_SHORT).show();
             }
         });
-
-        Button createButton = (Button) findViewById(R.id.createButton);
-
-        createEventAdButton = (Button) findViewById(R.id.createButton);
-
     }
 
     @Override
