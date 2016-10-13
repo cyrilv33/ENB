@@ -7,6 +7,7 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" android:background="@drawable/board">
 
+    <!--Create button: once you have entered the name of your event, you can create it with this button-->
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,18 +18,20 @@
         android:layout_alignParentEnd="true"
         android:onClick="createEventAdFunction"/>
 
+    <!--to assimilate all the events you create into a list-->
     <ListView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/myListView"
         android:scrollbars="vertical"/>
 
+    <!--enter the name of the event into this list-->
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/listContent"
         android:textSize="16sp"
-        android:hint="Add a new event/ad to List View"
+        android:hint="@string/add_a_new_event_ad_to_list_view"
         android:layout_alignBaseline="@+id/createButton"
         android:layout_alignBottom="@+id/createButton"
         android:layout_toLeftOf="@+id/createButton"
