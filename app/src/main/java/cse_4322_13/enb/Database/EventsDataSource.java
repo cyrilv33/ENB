@@ -88,8 +88,8 @@ public class EventsDataSource {
 
     // Pull all events from table and add to a list
 
-    public List<Event> getAllEvents() {
-        List<Event> EventsList;
+    public ArrayList<Event> getAllEvents() {
+        ArrayList<Event> EventsList;
         EventsList = new ArrayList<>();
 
         // add query to cursor
@@ -108,8 +108,8 @@ public class EventsDataSource {
         return EventsList;
     }
 
-    public List<Event> getAllEventsForClub(String clubName) {
-        List<Event> EventsList;
+    public ArrayList<Event> getAllEventsForClub(String clubName) {
+        ArrayList<Event> EventsList;
         EventsList = new ArrayList<>();
 
         // add query to cursor

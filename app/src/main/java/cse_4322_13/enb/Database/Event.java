@@ -22,8 +22,8 @@ public class Event {
         this.endTime = null;
     }
 
-    public Event(int id, String name, String description, String date, String location, String clubName, String startTime, String endTime) {
-        this.ID = id;
+    public Event(String name, String description, String date, String location, String clubName, String startTime, String endTime) {
+
         this.name = name;
         this.description = description;
         this.date = date;
@@ -31,6 +31,11 @@ public class Event {
         this.clubName = clubName;
         this.startTime = startTime;
         this.endTime = endTime;
+    }
+
+    @Override
+    public String toString() {
+        return name + "\nStart: " + startTime + " End: " + endTime + "\n" + date + " " + location;
     }
 
     public long getID() {
@@ -69,13 +74,9 @@ public class Event {
         return location;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
+    public void setLocation(String location) { this.location = location; }
 
-    public String getClubName() {
-        return clubName;
-    }
+    public String getClubName() { return clubName; }
 
     public void setClubName(String clubName) {
         this.clubName = clubName;

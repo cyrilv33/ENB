@@ -16,7 +16,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:onClick="createEventAdFunction"/>
+        android:onClick="createEventAddFunction"/>
 
     <!--to assimilate all the events you create into a list-->
     <ListView
@@ -26,17 +26,17 @@
         android:scrollbars="vertical"/>
 
     <!--enter the name of the event into this list-->
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/listContent"
-        android:textSize="16sp"
-        android:hint="@string/add_a_new_event_ad_to_list_view"
-        android:layout_alignBaseline="@+id/createButton"
-        android:layout_alignBottom="@+id/createButton"
-        android:layout_toLeftOf="@+id/createButton"
-        android:layout_toStartOf="@+id/createButton"
-        android:layout_marginRight="13dp"
-        android:layout_marginEnd="13dp" />
+    <!--<EditText-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/listContent"-->
+        <!--android:textSize="16sp"-->
+        <!--android:hint="@string/add_a_new_event_ad_to_list_view"-->
+        <!--android:layout_alignBaseline="@+id/createButton"-->
+        <!--android:layout_alignBottom="@+id/createButton"-->
+        <!--android:layout_toLeftOf="@+id/createButton"-->
+        <!--android:layout_toStartOf="@+id/createButton"-->
+        <!--android:layout_marginRight="13dp"-->
+        <!--android:layout_marginEnd="13dp" />-->
 
 </RelativeLayout>
