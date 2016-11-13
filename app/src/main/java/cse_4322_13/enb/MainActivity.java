@@ -169,5 +169,6 @@ public class MainActivity extends AppCompatActivity {
                     data.getStringExtra("startTime"),
                     data.getStringExtra("endTime"));
         }
+        MainActivity.this.recreate();
     }
 }
