@@ -9,10 +9,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AnalogClock;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TabHost;
 import android.widget.Toast;
 
 import java.sql.SQLException;
@@ -28,14 +30,13 @@ public class MainActivity extends AppCompatActivity {
     Button createEventAdButton;
     ListView eventListView;
     EditText editText;
-    ArrayList<Event> listOfEvents;
-    ArrayAdapter<Event> eventListAdapter;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.tab_layout);
 
         dataSource = new EventsDataSource(this);
         try {
@@ -44,16 +45,73 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        // sample
-        eventListView =(ListView) findViewById(R.id.myListView);
-//        editText = (EditText) findViewById(R.id.listContent);
-        listOfEvents = dataSource.getAllEvents();
-        eventListAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listOfEvents);
-        eventListView.setAdapter(eventListAdapter);
 
-        createEventAdButton = (Button) findViewById(R.id.createButton);
 
-        setupListViewListener();
+
+        final TabHost tabs=(TabHost)findViewById(R.id.tabhost);
+
+        tabs.setup();
+
+        Button btn = new Button(MainActivity.this);
+        btn.setText("Create Event");
+        btn.setId(Integer.parseInt("3"));
+        //btn.setOnClickListener(createEventAddFunction(MainActivity.this));
+
+        // Create a new tab with a listview populated from the db
+
+        for (int i=0;i<4;i++) {
+            TabHost.TabSpec spec=tabs.newTabSpec("tag"+i);
+
+            final ListView ls1 = new ListView(MainActivity.this);
+
+            spec.setContent(new TabHost.TabContentFactory() {
+                public View createTabContent(String tag)
+                {
+                    final ArrayList<Event> eventsList = dataSource.getAllEvents();
+                    final ArrayAdapter<Event> adp = new ArrayAdapter<>(MainActivity.this,android.R.layout.simple_list_item_1,eventsList);
+                    ls1.setAdapter(adp);
+                    ls1.setOnItemLongClickListener(
+                            new AdapterView.OnItemLongClickListener() {
+                                @Override
+                                public boolean onItemLongClick(final AdapterView<?> adapter,
+                                                               View item, int pos, long id) {
+                                    position = pos;
+                                    AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+                                    alert.setTitle("DELETE");
+                                    alert.setMessage("Are you sure to delete record");
+                                    alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dataSource.deleteEvents(eventsList.get(position).getID());
+                                            eventsList.remove(position);
+                                            adp.notifyDataSetChanged();
+                                            dialog.dismiss();
+
+                                        }
+                                    });
+                                    alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                            dialog.dismiss();
+                                        }
+                                    });
+
+                                    alert.show();
+                                    return true;
+                                }
+
+                            }
+                    );
+
+                    return ls1;
+                }
+            });
+            spec.setIndicator("Button"+i);
+            tabs.addTab(spec);
+        }
 
 //        eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            @Override
@@ -64,45 +122,6 @@ public class MainActivity extends AppCompatActivity {
 //                Toast.makeText(MainActivity.this,eventPicked,Toast.LENGTH_SHORT).show();
 //            }
 //        });
-    }
-
-    private void setupListViewListener() {
-
-        eventListView.setOnItemLongClickListener(
-                new AdapterView.OnItemLongClickListener() {
-                    @Override
-                    public boolean onItemLongClick(AdapterView<?> adapter,
-                                                   View item, int pos, long id) {
-                        position = pos;
-                        AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
-                        alert.setTitle("DELETE");
-                        alert.setMessage("Are you sure to delete record");
-                        alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dataSource.deleteEvents(listOfEvents.get(position).getID());
-                                listOfEvents.remove(position);
-                                eventListAdapter.notifyDataSetChanged();
-                                dialog.dismiss();
-
-                            }
-                        });
-                        alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                dialog.dismiss();
-                            }
-                        });
-
-                        alert.show();
-                        return true;
-                    }
-
-                }
-        );
     }
 
     @Override
@@ -149,8 +168,6 @@ public class MainActivity extends AppCompatActivity {
                     data.getStringExtra("clubName"),
                     data.getStringExtra("startTime"),
                     data.getStringExtra("endTime"));
-            listOfEvents.add(event);
-            eventListAdapter.notifyDataSetChanged();
         }
     }
 }
