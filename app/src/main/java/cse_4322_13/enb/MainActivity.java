@@ -59,15 +59,18 @@ public class MainActivity extends AppCompatActivity {
 
         // Create a new tab with a listview populated from the db
 
-        for (int i=0;i<4;i++) {
-            TabHost.TabSpec spec=tabs.newTabSpec("tag"+i);
+        ArrayList<String> clubList;
+        clubList = dataSource.getAllClubs();
+
+        for (final String club : clubList) {
+            TabHost.TabSpec spec=tabs.newTabSpec(club);
 
             final ListView ls1 = new ListView(MainActivity.this);
 
             spec.setContent(new TabHost.TabContentFactory() {
                 public View createTabContent(String tag)
                 {
-                    final ArrayList<Event> eventsList = dataSource.getAllEvents();
+                    final ArrayList<Event> eventsList = dataSource.getAllEventsForClub(club);
                     final ArrayAdapter<Event> adp = new ArrayAdapter<>(MainActivity.this,android.R.layout.simple_list_item_1,eventsList);
                     ls1.setAdapter(adp);
                     ls1.setOnItemLongClickListener(
@@ -87,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
                                             eventsList.remove(position);
                                             adp.notifyDataSetChanged();
                                             dialog.dismiss();
+                                            MainActivity.this.recreate();
 
                                         }
                                     });
@@ -106,10 +110,38 @@ public class MainActivity extends AppCompatActivity {
                             }
                     );
 
+                    ls1.setOnItemClickListener(
+                            new AdapterView.OnItemClickListener() {
+
+                                @Override
+                                public void onItemClick(AdapterView<?> adapterView, View view, int pos, long id) {
+                                    position = pos;
+                                    AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+                                    alert.setTitle(eventsList.get(position).getName());
+                                    String text = eventsList.get(position).getClubName()+" event -"+
+                                            "\nDate: "+eventsList.get(position).getDate()+
+                                            "\nStart: "+eventsList.get(position).getStartTime()+
+                                            "\nEnd: "+eventsList.get(position).getEndTime()+
+                                            "\nAt "+eventsList.get(position).getLocation()+
+                                            "\n"+eventsList.get(position).getDescription();
+                                    alert.setMessage(text);
+                                    alert.setNeutralButton("Close", new DialogInterface.OnClickListener() {
+
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                    alert.show();
+                                }
+                            }
+                    );
+
                     return ls1;
                 }
             });
-            spec.setIndicator("Button"+i);
+            spec.setIndicator(club);
             tabs.addTab(spec);
         }
 
@@ -159,7 +191,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Toast.makeText(this, data.getStringExtra("description"), Toast.LENGTH_SHORT).show();
         if (resultCode == 1) {
             Event event = dataSource.createEvents(data.getStringExtra("name"),
                     data.getStringExtra("description"),
@@ -168,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
                     data.getStringExtra("clubName"),
                     data.getStringExtra("startTime"),
                     data.getStringExtra("endTime"));
+            MainActivity.this.recreate();
         }
-        MainActivity.this.recreate();
     }
 }
