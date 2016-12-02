@@ -128,6 +128,28 @@ public class EventsDataSource {
         return EventsList;
     }
 
+    // get all club names
+
+    public ArrayList<String> getAllClubs() {
+        ArrayList<String> Clubs;
+
+        Clubs = new ArrayList<>();
+
+        // add query to cursor
+        Cursor cursor = database.query(true,DatabaseHelper.TABLE_EVENTS,
+                new String[]{DatabaseHelper.COL_CLUB_NAME}, null, null, DatabaseHelper.COL_CLUB_NAME, null, null,null);
+
+        cursor.moveToFirst();
+        // traverse with cursor adding events to list
+        while (!cursor.isAfterLast()) {
+            Clubs.add(cursor.getString(0));
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        return Clubs;
+    }
+
     // build event object from cursor
 
     private Event cursorToEvents(Cursor cursor) {
